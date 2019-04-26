@@ -38,19 +38,28 @@ def modify_board(col, val):
 	board[i][col] = val
 
 def get_user_input (player_number):
-
+	if player_number != 0 and player_number != 1:
+	 	raise ValueError("This is only a two player game.")
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			sys.exit()
 		if event.type == pygame.MOUSEBUTTONDOWN:
-			print ("")
+			print ("event")
+			print (event.pos)
+		if event.type == pygame.MOUSEMOTION:
+			print ("event")
+			print (event)
 
-	# if player_number != 0 and player_number != 1:
-	# 	raise ValueError("This is only a two player game.")
+
 	# user_coordinates = input("Player " + str(player_number) + " , Please add the column number of where you would like to place your piece:")
 	# col = int(user_coordinates[0])
 	# return col
-	return 0
+
+	print("GET PRESSED BOOLEAN")
+	print(pygame.mouse.get_pressed())
+
+	# while( not pygame.mouse.get_pressed()):
+	# 	print ("NOT PRESSED YET")
 
 def set_game_over(player):
 	global game_over, winner
@@ -122,7 +131,8 @@ COLUMN_LENGTH = 7
 board = create_board()
 winner = random.randint(0,2)
 game_over = False
-turn = who_goes_first()
+turn = 0
+# who_goes_first()
 
 pygame.init()
 
@@ -139,24 +149,32 @@ pygame.display.update()
 print ("This is the starting board. A clean slate.")
 print(board)
 
-pdb.set_trace()
+#game portion
+while not game_over:
 
-# #game portion
-# while not game_over:
-# 	if turn == 0:
-# 		player_0_input = get_user_input (0)
-# 		modify_board (player_0_input, 1)
-# 		print ("This is the new board")
-# 		print(board)
-# 		is_game_over()
-# 		turn = 1
-# 	elif turn == 1:
-# 		player_1_input = get_user_input (1)
-# 		modify_board (player_1_input, 2)
-# 		print ("This is the new board")
-# 		print(board)
-# 		is_game_over()
-# 		turn = 0
+	for event in pygame.event.get():
+		if turn == 0:
 
-# #once the game is complete
-# print("The game is over now. Congratulations to player " + str(winner) + " Thanks for playing.")
+			if event.type == pygame.QUIT:
+				sys.exit()
+
+			if event.type == pygame.MOUSEMOTION:
+				cursorYCord = event.pos[1]/SQUARESIZE
+				print (cursorYCord)
+				if( 0 <= cursorYCord and cursorYCord <= 1 ):
+					pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+					pygame.draw.circle(screen, BLUE, ( int(event.pos[0]) , int(SQUARESIZE/2) ), int(SQUARESIZE/2.5))
+			
+			pygame.display.update()
+
+		
+	if turn == 1:
+		player_1_input = get_user_input (1)
+		modify_board (player_1_input, 2)
+		print ("This is the new board")
+		print(board)
+		is_game_over()
+		turn = 0
+
+#once the game is complete
+print("The game is over now. Congratulations to player " + str(winner) + " Thanks for playing.")
